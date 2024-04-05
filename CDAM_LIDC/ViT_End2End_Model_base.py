@@ -5,10 +5,15 @@ import torchvision.models as models
 import torch
 from torch.optim.lr_scheduler import MultiStepLR
 
-####### CREATING ViT MODEL CLASS
+####### CREATING VIT MODEL CLASS
 
-def create_model(freeze_layers, train_layers):
-    model = models.vit_b_16(weights='IMAGENET1K_V1')
+def create_model(freeze_layers, train_layers, patch_size=32):
+    if patch_size==32:
+        model = models.vit_b_32(weights='IMAGENET1K_V1')
+    elif patch_size==16:
+        model = models.vit_b_16(weights='IMAGENET1K_V1')
+    else:
+        raise Exception("Only patch_size=32 or patch_size=16!")
     if freeze_layers:
         num_layers_param = len(list(model.parameters()))
         for i, param in enumerate(model.parameters()):
@@ -19,27 +24,29 @@ def create_model(freeze_layers, train_layers):
     return model
 
 
-class ViT_End2End_Model_Finetune(LightningModule):
+class ViT_End2End_Model_base(LightningModule):
     def __init__(self,
                  learning_rate=1e-3,
                  momentum=0.0,
                  train_layers=10,
-                 freeze_layers=True
+                 freeze_layers=True,
+                 patch_size=32
                 ):
         super().__init__()
         self.learning_rate = learning_rate
         self.momentum = momentum
         self.train_layers = train_layers
         self.freeze_layers = freeze_layers
+        self.patch_size = patch_size
         
         # Defining model to use:
-        self.model = create_model(self.freeze_layers, self.train_layers)
+        self.model = create_model(self.freeze_layers, self.train_layers, self.patch_size)
         
         self.accuracy = Accuracy(task="binary")
         self.auroc = AUROC(task="binary")
         self.precision_ = Precision(task="binary")
         self.recall = Recall(task="binary")
-        #self.roc = ROC(task="binary")
+
         
         # Cost function:
         self.criterion = nn.BCEWithLogitsLoss()
@@ -99,13 +106,13 @@ class ViT_End2End_Model_Finetune(LightningModule):
     
     def configure_optimizers(self):
         params_to_update = self.model.parameters()
-        print("Params to learn:")
+        #print("Params to learn:")
         if self.freeze_layers:
             params_to_update = []
             for name, param in self.model.named_parameters():
                 if param.requires_grad == True:
                     params_to_update.append(param)
-                    print("\t", name)
+                    #print("\t", name)
                     
         optimizer = torch.optim.Adam(params_to_update, self.learning_rate)
         lr_scheduler = {
