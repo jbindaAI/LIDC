@@ -1,3 +1,5 @@
+### CDAM LIDC
+
 __pycache__
 
 CDAM_LIDC/images/
@@ -20,6 +22,7 @@ CDAM_LIDC/readme-images/CDAM_overview.png
 CDAM_LIDC/readme-images/sample.png
 
 
+
 ### DDPM repo
 
 DDPM/gen_imgs/*
@@ -29,3 +32,39 @@ DDPM/saved_model/*
 DDPM/script.py
 DDPM/wsad.slurm
 DDPM/__pycache__
+
+
+
+## ViT based Concept Bottleneck Model (CBM)
+
+# Ignoring Jupyter Notebook checkpoints files:
+ViT_CBM/.ipynb_checkpoints
+
+# Ignoring logs files
+ViT_CBM/lightning_logs/*
+ViT_CBM/tb_logs/*
+
+# Ignoring paths files
+ViT_CBM/paths.txt
+
+# Ignoring dataset
+ViT_CBM/dataset/*
+ViT_CBM/dataset/crops/*
+ViT_CBM/dataset/masks/*
+ViT_CBM/dataset/masks_pyradiomics/*
+ViT_CBM/dataset/radiomics_features/*
+ViT_CBM/dataset/crops_pyradiomics/*
+
+# Ignoring weights
+ViT_CBM/weights/*
+
+# Ignoring scores
+ViT_CBM/scores/*
+
+# Ignoring pycache
+ViT_CBM/__pycache__
+
+#training scripts
+ViT_CBM/train_concept.py
+ViT_CBM/train_end2end.py
+ViT_CBM/wsad.slurm
