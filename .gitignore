@@ -18,3 +18,14 @@ CDAM_LIDC/.ipynb_checkpoints/requirements_local-checkpoint.txt
 CDAM_LIDC/readme-images/.ipynb_checkpoints/CDAM_overview-checkpoint.png
 CDAM_LIDC/readme-images/CDAM_overview.png
 CDAM_LIDC/readme-images/sample.png
+
+
+### DDPM repo
+
+DDPM/gen_imgs/*
+DDPM/plots/*
+DDPM/Plots_report/*
+DDPM/saved_model/*
+DDPM/script.py
+DDPM/wsad.slurm
+DDPM/__pycache__

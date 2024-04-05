@@ -1,0 +1,21 @@
+# Ignoring Jupyter Notebook checkpoints files:
+.ipynb_checkpoints
+
+# Ignoring imgs
+gen_imgs/*
+
+# Ignoring plots
+plots/*
+Plots_report/*
+
+# Ignoring saved models
+saved_model/*
+
+# Igoring help file:
+script.py
+
+# Ignoring sbatch file:
+wsad.slurm
+
+# Ignoring pycache
+__pycache__
