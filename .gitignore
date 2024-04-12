@@ -73,3 +73,7 @@ ViT_CBM/wsad.slurm
 
 ### DINO
 DINO/.ipynb_checkpoints/Untitled-checkpoint.ipynb
+DINO/.ipynb_checkpoints/*
+DINO/LitModel.py
+DINO/my_utils/.ipynb_checkpoints/norm_factors-checkpoint.py
+DINO/my_utils/.ipynb_checkpoints/plot_utils-checkpoint.py
