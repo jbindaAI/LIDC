@@ -69,3 +69,7 @@ ViT_CBM/__pycache__
 ViT_CBM/train_concept.py
 ViT_CBM/train_end2end.py
 ViT_CBM/wsad.slurm
+
+
+### DINO
+DINO/.ipynb_checkpoints/Untitled-checkpoint.ipynb
