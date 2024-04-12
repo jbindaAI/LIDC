@@ -77,3 +77,9 @@ DINO/.ipynb_checkpoints/*
 DINO/LitModel.py
 DINO/my_utils/.ipynb_checkpoints/norm_factors-checkpoint.py
 DINO/my_utils/.ipynb_checkpoints/plot_utils-checkpoint.py
+DINO/tb_logs/*
+DINO/checkpoints/*
+DINO/lightning_logs/
+DINO/my_utils/.ipynb_checkpoints/
+DINO/training_plots/
+DINO/wsad.slurm

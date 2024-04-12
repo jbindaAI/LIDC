@@ -25,28 +25,28 @@ class LIDC_Dataset(Dataset):
 
         if mode == "train":
             # Loading training subset of LIDC data:
-            with open(self.datadir + "X_train.pkl", 'rb') as f:
+            with open(self.datadir +"splitted_sets/"+ "X_train.pkl", 'rb') as f:
                 self.X_data = pickle.load(f)
-            with open(self.datadir + "y_train.pkl", 'rb') as f:
+            with open(self.datadir +"splitted_sets/" + "y_train.pkl", 'rb') as f:
                 self.y_data = pickle.load(f)
                 
         elif mode == "val":
             # Loading training subset of LIDC data:
-            with open(self.datadir + "X_val.pkl", 'rb') as f:
+            with open(self.datadir + "splitted_sets/" + "X_val.pkl", 'rb') as f:
                 self.X_data = pickle.load(f)
-            with open(self.datadir + "y_val.pkl", 'rb') as f:
+            with open(self.datadir + "splitted_sets/" + "y_val.pkl", 'rb') as f:
                 self.y_data = pickle.load(f)
                 
         elif mode == "test":
-            with open(self.datadir + "X_test.pkl", 'rb') as f:
+            with open(self.datadir + "splitted_sets/" + "X_test.pkl", 'rb') as f:
                 self.X_data = pickle.load(f)
-            with open(self.datadir + "y_test.pkl", 'rb') as f:
+            with open(self.datadir + "splitted_sets/" + "y_test.pkl", 'rb') as f:
                 self.y_data = pickle.load(f)
 
         self.targets = self.y_data.to_numpy() 
         imgs = []
         for elt in self.X_data:
-            crop = torch.load(self.datadir + f"crops/{elt}")
+            crop = torch.load(self.datadir + f"crops/{elt}").float()
             imgs.append(crop)
         self.images = imgs
 
