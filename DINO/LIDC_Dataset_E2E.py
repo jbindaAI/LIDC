@@ -8,7 +8,7 @@ import numpy as np
 import glob
 import pickle
 
-class LIDC_Dataset(Dataset):
+class LIDC_Dataset_E2E(Dataset):
     def __init__(
         self, 
         datadir, 
@@ -28,20 +28,20 @@ class LIDC_Dataset(Dataset):
             with open(self.datadir +"splitted_sets/"+ "X_train.pkl", 'rb') as f:
                 self.X_data = pickle.load(f)
             with open(self.datadir +"splitted_sets/" + "y_train.pkl", 'rb') as f:
-                self.y_data = pickle.load(f)
+                self.y_data = pickle.load(f)["target"]
                 
         elif mode == "val":
             # Loading training subset of LIDC data:
             with open(self.datadir + "splitted_sets/" + "X_val.pkl", 'rb') as f:
                 self.X_data = pickle.load(f)
             with open(self.datadir + "splitted_sets/" + "y_val.pkl", 'rb') as f:
-                self.y_data = pickle.load(f)
+                self.y_data = pickle.load(f)["target"]
                 
         elif mode == "test":
             with open(self.datadir + "splitted_sets/" + "X_test.pkl", 'rb') as f:
                 self.X_data = pickle.load(f)
             with open(self.datadir + "splitted_sets/" + "y_test.pkl", 'rb') as f:
-                self.y_data = pickle.load(f)
+                self.y_data = pickle.load(f)["target"]
 
         self.targets = self.y_data.to_numpy() 
         imgs = []

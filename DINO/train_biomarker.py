@@ -16,13 +16,24 @@ DROPOUT = 0.09
 EPOCHS = 50
 BATCH_SIZE = 32
 MODEL_NR = 5
-MEAN = -632.211
-STD = 359.604
+LOCAL = True
 
+if LOCAL:
+    data_path="/home/jbinda/INFORM/LIDC/dataset/"
+    tb_logs_path="/home/jbinda/INFORM/LIDC/DINO/tb_logs/End2End/"
+    checkpoints_path = "/home/jbinda/INFORM/LIDC/DINO/checkpoints/biomarker/"
+else:
+    data_path="/home/dzban112/LIDC/dataset/"
+    tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/End2End/"
+    checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/biomarker/"
 
-data_path="/home/dzban112/LIDC/dataset/"
-tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/End2End/"
-checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/"
+with open(data_path+"splitted_sets"+"fitted_mean_std.pkl", 'rb') as f:
+    dict_ = pickle.load(f)
+with open(data_path+"splitted_sets"+"scaler.pkl", 'rb') as f:
+    SCALER = pickle.load(f)
+    
+MEAN = dict_["mean"]
+STD = dict_["std"]
 
 train_transform = transforms.Compose([
     transforms.RandomResizedCrop(224),
@@ -68,7 +79,7 @@ lr_monitor = LearningRateMonitor(logging_interval='step')
 trainer = pl.Trainer(accelerator="gpu", devices=1, 
                      precision="16-mixed", max_epochs=EPOCHS,
                      callbacks=[checkpoint_callback, lr_monitor],
-                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_E2E_{MODEL_NR}")
+                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_biom_{MODEL_NR}")
                     )
 model = End2End_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR)
 trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
