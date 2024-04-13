@@ -9,6 +9,16 @@ from my_utils.MyRotation import MyRotation
 from LIDC_Dataset import LIDC_Dataset
 from End2End_Model import End2End_Model
 
+## HYPERPARAMETERS:
+TRAINABLE_LAYERS = 50
+LR = 3e-4
+DROPOUT = 0.09
+EPOCHS = 50
+BATCH_SIZE = 32
+MODEL_NR = 5
+MEAN = -632.211
+STD = 359.604
+
 
 data_path="/home/dzban112/LIDC/dataset/"
 tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/End2End/"
@@ -17,17 +27,17 @@ checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/"
 train_transform = transforms.Compose([
     transforms.RandomResizedCrop(224),
     MyRotation([0, 90, 180, 270]),
-    transforms.Normalize(mean=-632.900, std=358.664),
+    transforms.Normalize(mean=MEAN, std=STD),
 ])
 
 val_transform = transforms.Compose([
     transforms.Resize(256, interpolation=3),
     transforms.CenterCrop(224),
-    transforms.Normalize(mean=-632.900, std=358.664),
+    transforms.Normalize(mean=MEAN, std=STD),
 ])
 
 # add a checkpoint callback that saves the model with the lowest validation loss
-checkpoint_name = "best-checkpoint_7"
+checkpoint_name = f"best-checkpoint_{MODEL_NR}"
 checkpoint_callback = pl.callbacks.ModelCheckpoint(
     dirpath=checkpoints_path,
     filename=checkpoint_name,
@@ -50,17 +60,17 @@ ds_val = LIDC_Dataset(
                 mode="val"
             )
 
-train_loader = torch.utils.data.DataLoader(ds_train, shuffle=True, batch_size=32, num_workers=8)
-val_loader = torch.utils.data.DataLoader(ds_val, shuffle=False, batch_size=32, num_workers=8)
+train_loader = torch.utils.data.DataLoader(ds_train, shuffle=True, batch_size=BATCH_SIZE, num_workers=8)
+val_loader = torch.utils.data.DataLoader(ds_val, shuffle=False, batch_size=BATCH_SIZE, num_workers=8)
 
 torch.set_float32_matmul_precision('medium')
 lr_monitor = LearningRateMonitor(logging_interval='step')
 trainer = pl.Trainer(accelerator="gpu", devices=1, 
-                     precision="16-mixed", max_epochs=50,
+                     precision="16-mixed", max_epochs=EPOCHS,
                      callbacks=[checkpoint_callback, lr_monitor],
-                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_E2E_7")
+                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_E2E_{MODEL_NR}")
                     )
-model = End2End_Model(trainable_layers=50, dropout=0.08, lr_rate=3e-4)
+model = End2End_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR)
 trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
 # lightning deepspeed has saved a directory instead of a file
 save_path = f"{checkpoint_name}.ckpt"
