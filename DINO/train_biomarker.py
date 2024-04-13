@@ -1,35 +1,34 @@
 import torch
 from torchvision import datasets, transforms
 import pytorch_lightning as pl
-from End2End_Model import End2End_Model
-from pytorch_lightning.utilities.deepspeed import convert_zero_checkpoint_to_fp32_state_dict
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import LearningRateMonitor
 from my_utils.MyRotation import MyRotation
-from LIDC_Dataset_E2E import LIDC_Dataset_E2E
-from End2End_Model import End2End_Model
+from LIDC_Dataset_biom import LIDC_Dataset_biom
+from Biomarker_Model import Biomarker_Model
+import pickle
 
 ## HYPERPARAMETERS:
 TRAINABLE_LAYERS = 50
 LR = 3e-4
 DROPOUT = 0.09
-EPOCHS = 50
+EPOCHS = 10
 BATCH_SIZE = 32
-MODEL_NR = 5
-LOCAL = True
+MODEL_NR = 4
+LOCAL = False
 
 if LOCAL:
     data_path="/home/jbinda/INFORM/LIDC/dataset/"
-    tb_logs_path="/home/jbinda/INFORM/LIDC/DINO/tb_logs/End2End/"
-    checkpoints_path = "/home/jbinda/INFORM/LIDC/DINO/checkpoints/biomarker/"
+    tb_logs_path="/home/jbinda/INFORM/LIDC/DINO/tb_logs/Biomarkers/"
+    checkpoints_path = "/home/jbinda/INFORM/LIDC/DINO/checkpoints/Biomarkers/"
 else:
     data_path="/home/dzban112/LIDC/dataset/"
-    tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/End2End/"
-    checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/biomarker/"
+    tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/Biomarkers/"
+    checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/Biomarkers/"
 
-with open(data_path+"splitted_sets"+"fitted_mean_std.pkl", 'rb') as f:
+with open(data_path+"splitted_sets"+"/"+"fitted_mean_std.pkl", 'rb') as f:
     dict_ = pickle.load(f)
-with open(data_path+"splitted_sets"+"scaler.pkl", 'rb') as f:
+with open(data_path+"splitted_sets"+"/"+"scaler.pkl", 'rb') as f:
     SCALER = pickle.load(f)
     
 MEAN = dict_["mean"]
@@ -57,17 +56,17 @@ checkpoint_callback = pl.callbacks.ModelCheckpoint(
     mode="min",
 )
 
-ds_train = LIDC_Dataset_E2E(
+ds_train = LIDC_Dataset_biom(
                 datadir=data_path,
                 transform=train_transform,
-                with_gen_imgs=False,
+                label_transform=SCALER,
                 mode="train"
             )
 
-ds_val = LIDC_Dataset_E2E(
+ds_val = LIDC_Dataset_biom(
                 datadir=data_path,
                 transform=val_transform,
-                with_gen_imgs=False,
+                label_transform=SCALER,
                 mode="val"
             )
 
@@ -79,11 +78,8 @@ lr_monitor = LearningRateMonitor(logging_interval='step')
 trainer = pl.Trainer(accelerator="gpu", devices=1, 
                      precision="16-mixed", max_epochs=EPOCHS,
                      callbacks=[checkpoint_callback, lr_monitor],
-                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_biom_{MODEL_NR}")
+                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_biom_{MODEL_NR}"),
+                     log_every_n_steps=50
                     )
-model = End2End_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR)
+model = Biomarker_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR)
 trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
-# lightning deepspeed has saved a directory instead of a file
-save_path = f"{checkpoint_name}.ckpt"
-output_path = f"{checkpoint_name}.ckpt"
-convert_zero_checkpoint_to_fp32_state_dict(save_path, output_path)

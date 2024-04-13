@@ -15,7 +15,7 @@ def set_encoder_dropout_p(module, dropout_p):
                 child_module.p = dropout_p
 
 
-class End2End_Model(pl.LightningModule):
+class Biomarker_Model(pl.LightningModule):
     def __init__(self, trainable_layers=0, dropout=0.0, lr_rate=3e-4):
         super().__init__()
         self.dropout = dropout
@@ -42,7 +42,7 @@ class End2End_Model(pl.LightningModule):
         x, y = batch
         y_hat = self(x).squeeze()
         y = y.float()
-        loss = F.Huber_Loss(y_hat, y)
+        loss = F.huber_loss(y_hat, y)
         self.log("train_loss", loss, prog_bar=False, sync_dist=True, on_epoch=True)
         return loss
 
@@ -52,7 +52,7 @@ class End2End_Model(pl.LightningModule):
         if len(y_hat.size()) == 0:
             y_hat = y_hat.unsqueeze(dim=0)
         y = y.float()
-        loss = F.Huber_Loss(y_hat, y)
+        loss = F.huber_loss(y_hat, y)
         
         self.log("val_loss", loss, prog_bar=False, sync_dist=True, on_epoch=True)
         return loss
@@ -63,7 +63,7 @@ class End2End_Model(pl.LightningModule):
         if len(y_hat.size()) == 0:
             y_hat = y_hat.unsqueeze(dim=0)
         y = y.float()
-        loss = F.Huber_Loss(y_hat, y)
+        loss = F.huber_loss(y_hat, y)
         
         self.log("test_loss", loss, prog_bar=False, sync_dist=True, on_epoch=True)
         return loss
