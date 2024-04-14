@@ -25,7 +25,7 @@ dataset/
 CDAM_LIDC/maps/SSL_ViT/.ipynb_checkpoints/0027-checkpoint.png
 CDAM_LIDC/maps/SSL_ViT/.ipynb_checkpoints/0050-checkpoint.png
 CDAM_LIDC/maps/SSL_ViT/.ipynb_checkpoints/0567-checkpoint.png
-
+CDAM_LIDC/maps/*
 
 ### DDPM repo
 
