@@ -11,10 +11,11 @@ import pickle
 ## HYPERPARAMETERS:
 TRAINABLE_LAYERS = 50
 LR = 3e-4
+LR_DECAY_RATE = 0.95
 DROPOUT = 0.09
-EPOCHS = 10
+EPOCHS = 50
 BATCH_SIZE = 32
-MODEL_NR = 4
+MODEL_NR = 5
 LOCAL = False
 
 if LOCAL:
@@ -79,7 +80,7 @@ trainer = pl.Trainer(accelerator="gpu", devices=1,
                      precision="16-mixed", max_epochs=EPOCHS,
                      callbacks=[checkpoint_callback, lr_monitor],
                      logger=TensorBoardLogger(tb_logs_path, name=f"ViT_biom_{MODEL_NR}"),
-                     log_every_n_steps=50
+                     log_every_n_steps=20
                     )
-model = Biomarker_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR)
+model = Biomarker_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR, lr_decay_rate=LR_DECAY_RATE)
 trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
