@@ -33,8 +33,8 @@ class Biomarker_Model(pl.LightningModule):
             if i < (all_layers - trainable_layers):
                 p.requires_grad = False    
         self.linear = nn.Linear(384, 8)
-        self.MSE = MeanSquaredError(squared=True, num_outputs=8)
-        self.RMSE = MeanSquaredError(squared=False, num_outputs=8)
+        self.MSE = MeanSquaredError(squared=True)
+        self.RMSE = MeanSquaredError(squared=False)
 
     def forward(self, x):
         x = self.model(x)
@@ -53,7 +53,7 @@ class Biomarker_Model(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self(x).squeeze()
-        if len(y_hat.size()) == 0:
+        if len(y_hat.size()) == 1:
             y_hat = y_hat.unsqueeze(dim=0)
         y = y.float()
         loss = F.huber_loss(y_hat, y)
@@ -65,12 +65,12 @@ class Biomarker_Model(pl.LightningModule):
     def test_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self(x).squeeze()
-        if len(y_hat.size()) == 0:
+        if len(y_hat.size()) == 1:
             y_hat = y_hat.unsqueeze(dim=0)
         y = y.float()
         loss = F.huber_loss(y_hat, y)
-        self.log("val_mse", self.MSE(y_hat, y), prog_bar=False, on_epoch=True)
-        self.log("val_rmse", self.RMSE(y_hat, y), prog_bar=False, on_epoch=True)
+        self.log("test_mse", self.MSE(y_hat, y), prog_bar=False, on_epoch=True)
+        self.log("test_rmse", self.RMSE(y_hat, y), prog_bar=False, on_epoch=True)
         self.log("test_loss", loss, prog_bar=False, sync_dist=True, on_epoch=True)
         return loss
 
