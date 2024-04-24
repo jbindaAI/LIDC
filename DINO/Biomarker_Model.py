@@ -3,7 +3,7 @@ import torch
 import pytorch_lightning as pl
 import torch.nn as nn
 import torch.nn.functional as F
-import torchmetrics
+from torchmetrics.regression import MeanSquaredError
 
 def set_encoder_dropout_p(module, dropout_p):
     if isinstance(module, nn.TransformerEncoderLayer):
@@ -33,6 +33,8 @@ class Biomarker_Model(pl.LightningModule):
             if i < (all_layers - trainable_layers):
                 p.requires_grad = False    
         self.linear = nn.Linear(384, 8)
+        self.MSE = MeanSquaredError(squared=True, num_outputs=8)
+        self.RMSE = MeanSquaredError(squared=False, num_outputs=8)
 
     def forward(self, x):
         x = self.model(x)
@@ -44,7 +46,8 @@ class Biomarker_Model(pl.LightningModule):
         y_hat = self(x).squeeze()
         y = y.float()
         loss = F.huber_loss(y_hat, y)
-        self.log("train_loss", loss, prog_bar=False, sync_dist=True, on_epoch=True)
+        self.log("train_mse", self.MSE(y_hat, y), prog_bar=False, on_epoch=True)
+        self.log("train_loss", loss, prog_bar=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -54,7 +57,8 @@ class Biomarker_Model(pl.LightningModule):
             y_hat = y_hat.unsqueeze(dim=0)
         y = y.float()
         loss = F.huber_loss(y_hat, y)
-        
+        self.log("val_mse", self.MSE(y_hat, y), prog_bar=False, on_epoch=True)
+        self.log("val_rmse", self.RMSE(y_hat, y), prog_bar=False, on_epoch=True)
         self.log("val_loss", loss, prog_bar=False, sync_dist=True, on_epoch=True)
         return loss
     
@@ -65,7 +69,8 @@ class Biomarker_Model(pl.LightningModule):
             y_hat = y_hat.unsqueeze(dim=0)
         y = y.float()
         loss = F.huber_loss(y_hat, y)
-        
+        self.log("val_mse", self.MSE(y_hat, y), prog_bar=False, on_epoch=True)
+        self.log("val_rmse", self.RMSE(y_hat, y), prog_bar=False, on_epoch=True)
         self.log("test_loss", loss, prog_bar=False, sync_dist=True, on_epoch=True)
         return loss
 
