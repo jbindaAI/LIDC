@@ -7,26 +7,27 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 from my_utils.MyRotation import MyRotation
 from LIDC_Dataset_E2E import LIDC_Dataset_E2E
 from SL_End2End_Model import SL_End2End_Model
+import pickle
 
 ## HYPERPARAMETERS:
-PATCH_SIZE = 32
-TRAINABLE_LAYERS = 10
+PATCH_SIZE = 16
+TRAINABLE_LAYERS = 40
 LR = 3e-4
-DROPOUT = 0.0
+DROPOUT = 0.12
 EPOCHS = 50
 BATCH_SIZE = 32
-MODEL_NR = 1
-LOCAL = True
+MODEL_NR = 5
+LOCAL = False
 
 
 if LOCAL:
     data_path="/home/jbinda/INFORM/LIDC/dataset/"
-    tb_logs_path="/home/jbinda/INFORM/LIDC/DINO/tb_logs/Biomarkers/"
-    checkpoints_path = "/home/jbinda/INFORM/LIDC/DINO/checkpoints/Biomarkers/"
+    tb_logs_path=f"/home/jbinda/INFORM/LIDC/ViT/tb_logs/End2End/p{PATCH_SIZE}"
+    checkpoints_path = f"/home/jbinda/INFORM/LIDC/ViT/checkpoints/End2End/p{PATCH_SIZE}"
 else:
     data_path="/home/dzban112/LIDC/dataset/"
-    tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/Biomarkers/"
-    checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/Biomarkers/"
+    tb_logs_path=f"/home/dzban112/LIDC/ViT/tb_logs/End2End/p{PATCH_SIZE}"
+    checkpoints_path = f"/home/dzban112/LIDC/ViT/checkpoints/End2End/p{PATCH_SIZE}"
 
 with open(data_path+"splitted_sets"+"/"+"fitted_mean_std.pkl", 'rb') as f:
     dict_ = pickle.load(f)
@@ -81,9 +82,10 @@ lr_monitor = LearningRateMonitor(logging_interval='step')
 trainer = pl.Trainer(accelerator="gpu", devices=1, 
                      precision="16-mixed", max_epochs=EPOCHS,
                      callbacks=[checkpoint_callback, lr_monitor],
-                     logger=TensorBoardLogger(tb_logs_path, name=f"SL_ViT_E2E_{MODEL_NR}")
+                     logger=TensorBoardLogger(tb_logs_path, name=f"SL_ViT_E2E_{MODEL_NR}"),
+                     log_every_n_steps=20
                     )
-model = End2End_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR)
+model = SL_End2End_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR, patch_size=PATCH_SIZE)
 trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
 # lightning deepspeed has saved a directory instead of a file
 save_path = f"{checkpoint_name}.ckpt"

@@ -33,13 +33,11 @@ def create_model(trainable_layers, patch_size=32):
 
 
 class SL_Biomarker_Model(pl.LightningModule):
-    def __init__(self, trainable_layers=0, dropout=0.0, lr_rate=3e-4, lr_decay_rate=0.95):
+    def __init__(self, trainable_layers=0, dropout=0.0, lr_rate=3e-4, lr_decay_rate=0.95, patch_size=32):
         super().__init__()
         self.dropout = dropout
         self.lr_rate = lr_rate
         self.lr_decay_rate = lr_decay_rate
-        self.save_hyperparameters()
-        # self.model = dino_trunc()
         self.model = create_model(trainable_layers, patch_size)
         # changing dropout values:
         if dropout > 0.0:       
@@ -54,7 +52,6 @@ class SL_Biomarker_Model(pl.LightningModule):
 
     def forward(self, x):
         x = self.model(x)
-        x = self.linear(x)
         return x
 
     def training_step(self, batch, batch_idx):

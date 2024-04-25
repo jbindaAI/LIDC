@@ -50,7 +50,6 @@ class SL_End2End_Model(pl.LightningModule):
 
     def forward(self, x):
         x = self.model(x)
-        x = self.linear(x)
         return x
 
     def training_step(self, batch, batch_idx):

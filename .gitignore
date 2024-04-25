@@ -98,3 +98,8 @@ ViT/.ipynb_checkpoints/ViT_finetuning-checkpoint.ipynb
 ViT/.ipynb_checkpoints/train_SL_End2End-checkpoint.py
 ViT/my_utils/.ipynb_checkpoints/norm_factors-checkpoint.py
 ViT/my_utils/.ipynb_checkpoints/plot_utils-checkpoint.py
+ViT/.ipynb_checkpoints/
+ViT/checkpoints/
+ViT/lightning_logs/
+ViT/tb_logs/
+ViT/wsad.slurm
