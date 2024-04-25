@@ -90,3 +90,11 @@ DINO/training_plots/.ipynb_checkpoints/train_loss-checkpoint.png
 DINO/training_plots/.ipynb_checkpoints/val_ACC-checkpoint.png
 DINO/training_plots/.ipynb_checkpoints/val_loss-checkpoint.png
 DINO/training_plots/Biomarkers/.ipynb_checkpoints/
+
+### ViT
+ViT/.ipynb_checkpoints/SL_Biomarker_Model-checkpoint.py
+ViT/.ipynb_checkpoints/SL_End2End_Model-checkpoint.py
+ViT/.ipynb_checkpoints/ViT_finetuning-checkpoint.ipynb
+ViT/.ipynb_checkpoints/train_SL_End2End-checkpoint.py
+ViT/my_utils/.ipynb_checkpoints/norm_factors-checkpoint.py
+ViT/my_utils/.ipynb_checkpoints/plot_utils-checkpoint.py
