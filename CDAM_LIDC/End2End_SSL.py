@@ -6,13 +6,9 @@ import torch.nn.functional as F
 import torchmetrics
 
 def set_encoder_dropout_p(module, dropout_p):
-    if isinstance(module, nn.TransformerEncoderLayer):
-        # Traverse the encoder layer to find dropout layers
-        for child_name, child_module in module.named_children():
-            print(child_name)
-            if isinstance(child_module, nn.Dropout):
-                # Sets dropout probability for dropout layers within encoder blocks
-                child_module.p = dropout_p
+    if isinstance(module, nn.Dropout):
+        # Sets dropout probability for dropout layers within encoder blocks
+        module.p = dropout_p
 
 
 class End2End_Model(pl.LightningModule):

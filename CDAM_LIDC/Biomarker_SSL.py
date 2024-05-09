@@ -6,14 +6,9 @@ import torch.nn.functional as F
 import torchmetrics
 
 def set_encoder_dropout_p(module, dropout_p):
-    if isinstance(module, nn.TransformerEncoderLayer):
-        # Traverse the encoder layer to find dropout layers
-        for child_name, child_module in module.named_children():
-            print(child_name)
-            if isinstance(child_module, nn.Dropout):
-                # Sets dropout probability for dropout layers within encoder blocks
-                child_module.p = dropout_p
-
+    if isinstance(module, nn.Dropout):
+        # Sets dropout probability for dropout layers within encoder blocks
+        module.p = dropout_p
 
 class Biomarker_Model(pl.LightningModule):
     def __init__(self, trainable_layers=0, dropout=0.0, lr_rate=3e-4, lr_decay_rate=0.95):
