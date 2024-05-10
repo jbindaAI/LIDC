@@ -7,7 +7,7 @@ import torchmetrics
 
 def set_encoder_dropout_p(module, dropout_p):
     if isinstance(module, nn.Dropout):
-        # Sets dropout probability for dropout layers within encoder blocks
+        # Sets dropout probability for dropout layers
         module.p = dropout_p
 
 

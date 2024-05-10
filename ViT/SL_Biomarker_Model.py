@@ -7,13 +7,9 @@ from torchmetrics.regression import MeanSquaredError
 from torchvision import models
 
 def set_encoder_dropout_p(module, dropout_p):
-    if isinstance(module, nn.TransformerEncoderLayer):
-        # Traverse the encoder layer to find dropout layers
-        for child_name, child_module in module.named_children():
-            print(child_name)
-            if isinstance(child_module, nn.Dropout):
-                # Sets dropout probability for dropout layers within encoder blocks
-                child_module.p = dropout_p
+    if isinstance(module, nn.Dropout):
+        # Sets dropout probability for dropout layers
+        module.p = dropout_p
 
 
 def create_model(trainable_layers, patch_size=32):
