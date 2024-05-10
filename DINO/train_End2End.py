@@ -8,21 +8,35 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 from my_utils.MyRotation import MyRotation
 from LIDC_Dataset_E2E import LIDC_Dataset_E2E
 from End2End_Model import End2End_Model
+import pickle
 
 ## HYPERPARAMETERS:
 TRAINABLE_LAYERS = 50
 LR = 3e-4
-DROPOUT = 0.09
+DROPOUT = 0.003
 EPOCHS = 50
 BATCH_SIZE = 32
-MODEL_NR = 5
-MEAN = -632.211
-STD = 359.604
+MODEL_NR = 12
+LOCAL = False
 
 
-data_path="/home/dzban112/LIDC/dataset/"
-tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/End2End/"
-checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/"
+if LOCAL:
+    data_path="/home/jbinda/INFORM/LIDC/dataset/"
+    tb_logs_path="/home/jbinda/INFORM/LIDC/DINO/tb_logs/End2End/"
+    checkpoints_path = "/home/jbinda/INFORM/LIDC/DINO/checkpoints/End2End/"
+else:
+    data_path="/home/dzban112/LIDC/dataset/"
+    tb_logs_path="/home/dzban112/LIDC/DINO/tb_logs/End2End/"
+    checkpoints_path = "/home/dzban112/LIDC/DINO/checkpoints/End2End/"
+
+with open(data_path+"splitted_sets"+"/"+"fitted_mean_std.pkl", 'rb') as f:
+    dict_ = pickle.load(f)
+with open(data_path+"splitted_sets"+"/"+"scaler.pkl", 'rb') as f:
+    SCALER = pickle.load(f)
+    
+MEAN = dict_["mean"]
+STD = dict_["std"]
+
 
 train_transform = transforms.Compose([
     transforms.RandomResizedCrop(224),
@@ -68,7 +82,8 @@ lr_monitor = LearningRateMonitor(logging_interval='step')
 trainer = pl.Trainer(accelerator="gpu", devices=1, 
                      precision="16-mixed", max_epochs=EPOCHS,
                      callbacks=[checkpoint_callback, lr_monitor],
-                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_E2E_{MODEL_NR}")
+                     logger=TensorBoardLogger(tb_logs_path, name=f"ViT_E2E_{MODEL_NR}"),
+                     log_every_n_steps=20
                     )
 model = End2End_Model(trainable_layers=TRAINABLE_LAYERS, dropout=DROPOUT, lr_rate=LR)
 trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)

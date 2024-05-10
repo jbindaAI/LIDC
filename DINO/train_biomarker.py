@@ -9,13 +9,13 @@ from Biomarker_Model import Biomarker_Model
 import pickle
 
 ## HYPERPARAMETERS:
-TRAINABLE_LAYERS = 50
+TRAINABLE_LAYERS = 60
 LR = 3e-4
 LR_DECAY_RATE = 0.95
-DROPOUT = 0.09
+DROPOUT = 0.005
 EPOCHS = 50
 BATCH_SIZE = 32
-MODEL_NR = 5
+MODEL_NR = 13
 LOCAL = False
 
 if LOCAL:
