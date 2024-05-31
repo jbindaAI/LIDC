@@ -12,11 +12,11 @@ import pickle
 TRAINABLE_LAYERS = 60
 LR = 3e-4
 LR_DECAY_RATE = 0.95
-DROPOUT = 0.005
+DROPOUT = 0.003
 EPOCHS = 50
 BATCH_SIZE = 32
-MODEL_NR = 13
-LOCAL = False
+MODEL_NR = 15
+LOCAL = True
 
 if LOCAL:
     data_path="/home/jbinda/INFORM/LIDC/dataset/"
