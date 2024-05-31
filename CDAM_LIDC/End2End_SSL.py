@@ -17,7 +17,6 @@ class End2End_Model(pl.LightningModule):
         self.dropout = dropout
         self.lr_rate = lr_rate
         self.save_hyperparameters()
-        # self.model = dino_trunc()
         self.model = torch.hub.load("facebookresearch/dino:main", "dino_vits8")
         # changing dropout values:
         if dropout > 0.0:       
