@@ -103,3 +103,15 @@ ViT/checkpoints/
 ViT/lightning_logs/
 ViT/tb_logs/
 ViT/wsad.slurm
+
+
+### 3DViT
+3DViT/Greedy/data
+3DViT/Greedy/wandb
+3DViT/Greedy/ckpt
+__pycache__
+3DViT/Vanilla/data
+3DViT/Vanilla/wandb
+ckpt
+.ipynb_checkpoints
+
