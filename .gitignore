@@ -114,4 +114,6 @@ __pycache__
 3DViT/Vanilla/wandb
 ckpt
 .ipynb_checkpoints
-
+3DViT/3DViT/data
+3DViT/3DViT/wandb
+pretrained_models/

@@ -10,7 +10,7 @@ import pickle
 from typing import Literal
 import os
 
-class Vanilla_Dataset(Dataset):
+class ViT_3D_Dataset(Dataset):
     def __init__(
         self, 
         datadir="data/", 
@@ -25,23 +25,23 @@ class Vanilla_Dataset(Dataset):
             self.X_data = os.listdir(self.datadir + "crops/train")
             self.X_data.sort()
             with open(self.datadir + "y_train_df.pkl", 'rb') as f:
-                y_data = pickle.load(f)["target"]
+                self.y_data = pickle.load(f)["target"]
                 
         elif self.mode == "val":
             # Loading validational subset of data:
             self.X_data = os.listdir(self.datadir + "crops/val")
             self.X_data.sort()
             with open(self.datadir + "y_val_df.pkl", 'rb') as f:
-                y_data = pickle.load(f)["target"]
+                self.y_data = pickle.load(f)["target"]
                 
         elif self.mode == "test":
             # Loading test subset of data:
             self.X_data = os.listdir(self.datadir + "crops/test")
             self.X_data.sort()
             with open(self.datadir + "y_test_df.pkl", 'rb') as f:
-                y_data = pickle.load(f)["target"]
+                self.y_data = pickle.load(f)["target"]
                 
-        self.targets = y_data.to_numpy()
+        self.targets = self.y_data.to_numpy()
 
     
     def __len__(self):

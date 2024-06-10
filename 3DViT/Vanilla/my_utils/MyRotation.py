@@ -1,4 +1,4 @@
-import torchvision.transforms.functional as TF
+import torchvision.transforms.v2.functional as TF
 import random
 # randomly pick one of provided angles to rotate
 class MyRotation():
