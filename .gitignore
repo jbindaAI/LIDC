@@ -103,3 +103,7 @@ ViT/checkpoints/
 ViT/lightning_logs/
 ViT/tb_logs/
 ViT/wsad.slurm
+wandb
+
+#3DViT
+3DViT/
